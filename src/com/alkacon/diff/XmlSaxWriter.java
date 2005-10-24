@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/XmlSaxWriter.java,v $
- * Date   : $Date: 2005/10/24 14:40:33 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/10/24 14:46:28 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -361,18 +361,15 @@ public class XmlSaxWriter extends DefaultHandler implements LexicalHandler {
         if (m_openElement) {
             write("></");
         } else {
-            if (m_indentXml) {
-                if (!elementName.equals(m_lastElementName)) {
-                    writeNewLine();
-                }
-                m_indentLevel--;
+            if (!elementName.equals(m_lastElementName)) {
+                writeNewLine();
             }
             write("</");
         }
         write(elementName);
         write(">");
+        m_indentLevel--;
         if (!m_indentXml) {
-            m_indentLevel--;
             writeNewLine();
         }
         m_openElement = false;
