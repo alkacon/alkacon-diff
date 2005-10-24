@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/XmlSaxWriter.java,v $
- * Date   : $Date: 2005/10/24 09:48:44 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/10/24 14:40:33 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -65,6 +65,9 @@ public class XmlSaxWriter extends DefaultHandler implements LexicalHandler {
 
     /** The indentation level. */
     private int m_indentLevel;
+
+    /** Indicates if XML should be indented or not (no is default for pre-tag based output). */
+    private boolean m_indentXml;
 
     /** Indicates if a CDATA node is still open. */
     private boolean m_isCdata;
@@ -92,6 +95,7 @@ public class XmlSaxWriter extends DefaultHandler implements LexicalHandler {
         m_writer = writer;
         m_indentLevel = 0;
         m_escapeXml = true;
+        m_indentXml = false;
     }
 
     /**
@@ -195,8 +199,7 @@ public class XmlSaxWriter extends DefaultHandler implements LexicalHandler {
 
         try {
             if (m_openElement) {
-                write("/>");
-                m_openElement = false;
+                closeLastOpenElement(m_lastElementName);
             }
             writeNewLine();
             m_writer.flush();
@@ -219,20 +222,7 @@ public class XmlSaxWriter extends DefaultHandler implements LexicalHandler {
     public void endElement(String namespaceURI, String localName, String qualifiedName) throws SAXException {
 
         String elementName = resolveName(localName, qualifiedName);
-        if (m_openElement) {
-            write("></");
-            write(elementName);
-            write(">");
-        } else {
-            if (!elementName.equals(m_lastElementName)) {
-                writeNewLine();
-            }
-            write("</");
-            write(elementName);
-            write(">");
-        }
-        m_openElement = false;
-        m_indentLevel--;
+        closeLastOpenElement(elementName);
     }
 
     /**
@@ -263,6 +253,16 @@ public class XmlSaxWriter extends DefaultHandler implements LexicalHandler {
         return m_escapeXml;
     }
 
+    /** 
+     * Returns <code>true</code> if the generated XML is to be indented using newlines and tabs in the generated output.<p>
+     * 
+     * @return <code>true</code> if the generated XML is to be indented using newlines and tabs in the generated output
+     */
+    public boolean isIndentXml() {
+    
+        return m_indentXml;
+    }
+
     /**
      * If set to <code>true</code>, then 
      * XML entities are to be encoded in the generated output (not in CDATA elements).<p>
@@ -272,6 +272,17 @@ public class XmlSaxWriter extends DefaultHandler implements LexicalHandler {
     public void setEscapeXml(boolean value) {
 
         m_escapeXml = value;
+    }
+
+    /**
+     * If set to <code>true</code>, then 
+     * the generated XML is to be indented using newlines and tabs in the generated output.<p>
+     * 
+     * @param value indicates to to indent the output XML or not
+     */
+    public void setIndentXml(boolean value) {
+    
+        m_indentXml = value;
     }
 
     /**
@@ -340,6 +351,34 @@ public class XmlSaxWriter extends DefaultHandler implements LexicalHandler {
     }
 
     /**
+     * Closes the last open element.<p>
+     * 
+     * @param elementName the name of the element to close
+     * @throws SAXException in case of errors writing to the output
+     */
+    private void closeLastOpenElement(String elementName) throws SAXException {
+
+        if (m_openElement) {
+            write("></");
+        } else {
+            if (m_indentXml) {
+                if (!elementName.equals(m_lastElementName)) {
+                    writeNewLine();
+                }
+                m_indentLevel--;
+            }
+            write("</");
+        }
+        write(elementName);
+        write(">");
+        if (!m_indentXml) {
+            m_indentLevel--;
+            writeNewLine();
+        }
+        m_openElement = false;
+    }
+
+    /**
      * Resolves the local vs. the qualified name.<p>
      * 
      * If the local name is the empty String "", the qualified name is used.<p>
@@ -372,6 +411,7 @@ public class XmlSaxWriter extends DefaultHandler implements LexicalHandler {
         }
     }
 
+    
     /**
      * Writes a linebreak to the output stream, also handles the indentation.<p>
      *  
@@ -380,11 +420,12 @@ public class XmlSaxWriter extends DefaultHandler implements LexicalHandler {
     private void writeNewLine() throws SAXException {
 
         try {
-            // write new line
-            m_writer.write("\r\n");
-            // write indentation
-            for (int i = 1; i < m_indentLevel; i++) {
-                m_writer.write(INDENT_STR);
+            if (m_indentXml || (m_indentLevel == 0)) {
+                // write new line
+                m_writer.write("\r\n");
+                for (int i = 1; i < m_indentLevel; i++) {
+                    m_writer.write(INDENT_STR);
+                }
             }
             // flush the stream
             m_writer.flush();

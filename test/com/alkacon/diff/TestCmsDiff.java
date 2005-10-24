@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 
 import junit.framework.TestCase;
 
@@ -13,7 +14,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.2.0
  */
@@ -87,5 +88,26 @@ public class TestCmsDiff extends TestCase {
 
         String result2 = Diff.diffAsText(in1, in2);
         System.out.println(result2);
+    }
+    
+    /**
+     * Simple test for the diff function with indentation output.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testDiffWithIndent() throws Exception {
+        
+        String in1, in2;
+        in1 = readFile("com/alkacon/diff/testHtml_01a.html", "ISO-8859-1");
+        in2 = readFile("com/alkacon/diff/testHtml_01b.html", "ISO-8859-1");
+        
+        XmlSaxWriter saxWriter = new XmlSaxWriter(new StringWriter());
+        saxWriter.setIndentXml(true);
+        I_DiffOutput output = new HtmlDiffOutput(saxWriter);
+                
+        Diff.diff(in1, in2, output, -1);
+        
+        String result1 = saxWriter.getWriter().toString();
+        System.out.println(result1);
     }
 }
