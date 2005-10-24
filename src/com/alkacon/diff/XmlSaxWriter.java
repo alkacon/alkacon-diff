@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/XmlSaxWriter.java,v $
- * Date   : $Date: 2005/10/21 13:34:51 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/10/24 09:48:44 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -130,12 +130,9 @@ public class XmlSaxWriter extends DefaultHandler implements LexicalHandler {
                 case '"':
                     result.append("&quot;");
                     break;
-//                case ' ':
-//                    result.append("&nbsp;");
-//                    break;
-//                case '\t':
-//                    result.append("&nbsp;&nbsp;&nbsp;&nbsp;");
-//                    break;
+                case '\t':
+                    result.append("    ");
+                    break;
                 default:
                     result.append(ch);
             }
