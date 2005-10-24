@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/XmlSaxWriter.java,v $
- * Date   : $Date: 2005/10/24 14:46:28 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/10/24 14:47:24 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -259,7 +259,7 @@ public class XmlSaxWriter extends DefaultHandler implements LexicalHandler {
      * @return <code>true</code> if the generated XML is to be indented using newlines and tabs in the generated output
      */
     public boolean isIndentXml() {
-    
+
         return m_indentXml;
     }
 
@@ -281,7 +281,7 @@ public class XmlSaxWriter extends DefaultHandler implements LexicalHandler {
      * @param value indicates to to indent the output XML or not
      */
     public void setIndentXml(boolean value) {
-    
+
         m_indentXml = value;
     }
 
@@ -408,7 +408,6 @@ public class XmlSaxWriter extends DefaultHandler implements LexicalHandler {
         }
     }
 
-    
     /**
      * Writes a linebreak to the output stream, also handles the indentation.<p>
      *  
