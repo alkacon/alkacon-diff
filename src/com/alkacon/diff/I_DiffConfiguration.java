@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/DiffLineType.java,v $
+ * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/I_DiffConfiguration.java,v $
  * Date   : $Date: 2005/10/28 08:55:38 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,44 +32,27 @@
 package com.alkacon.diff;
 
 /**
- * Provides the basic result types for the diff output.<p>
+ * Configurates a Diff operation.<p>
+ * 
+ * Provides localized messages and number of lines to show before skipping.
  */
-public final class DiffLineType {
-
-    /** Result type: Content added. */
-    public static final DiffLineType ADDED = new DiffLineType("added");
-
-    /** Result type: Content removed. */
-    public static final DiffLineType REMOVED = new DiffLineType("removed");
-
-    /** Result type: Content unchanged. */
-    public static final DiffLineType UNCHANGED = new DiffLineType("unchanged");
-
-    /** Result type: Lines skipped. */
-    public static final DiffLineType SKIPPED = new DiffLineType("skipped");
-
-    /** The String identifier for the name. */
-    private String m_name;
+interface I_DiffConfiguration {
 
     /**
-     * Creates a new basic result type with the given name.<p>
+     * Returns the number of lines to show before skipping.<p>
      * 
-     * @param name the name for the new result type
+     * Use <code>-1</code> to show all lines.<p>
+     * 
+     * @return the number of lines to show before skipping
      */
-    private DiffLineType(String name) {
-
-        m_name = name;
-    }
+    int getLinesBeforeSkip();
 
     /**
-     * Returns the name of the basic result types for the diff output.<p>
+     * Returns a localized message like '({0} equal lines skipped)'.<p>
      * 
-     * @see java.lang.Object#toString()
+     * @param lines the number of skipped lines
      * 
-     * @return the name of the basic result types for the diff output
+     * @return a localized message
      */
-    public String toString() {
-
-        return m_name;
-    }
+    String getMessageEqualLinesSkipped(int lines);
 }

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/DiffLineType.java,v $
+ * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/TextDiffConfiguration.java,v $
  * Date   : $Date: 2005/10/28 08:55:38 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,45 +31,49 @@
 
 package com.alkacon.diff;
 
+
 /**
- * Provides the basic result types for the diff output.<p>
+ * Default Text Diff operation configuration class.<p>
  */
-public final class DiffLineType {
+public class TextDiffConfiguration implements I_TextDiffConfiguration {
 
-    /** Result type: Content added. */
-    public static final DiffLineType ADDED = new DiffLineType("added");
-
-    /** Result type: Content removed. */
-    public static final DiffLineType REMOVED = new DiffLineType("removed");
-
-    /** Result type: Content unchanged. */
-    public static final DiffLineType UNCHANGED = new DiffLineType("unchanged");
-
-    /** Result type: Lines skipped. */
-    public static final DiffLineType SKIPPED = new DiffLineType("skipped");
-
-    /** The String identifier for the name. */
-    private String m_name;
+    private final I_DiffConfiguration m_baseConf;
+    private final char m_marker;
 
     /**
-     * Creates a new basic result type with the given name.<p>
+     * Creates a new configuration object.<p> 
      * 
-     * @param name the name for the new result type
+     * @param baseConf base configuration
+     * @param marker the marker to highlight changed chars
      */
-    private DiffLineType(String name) {
+    public TextDiffConfiguration(I_DiffConfiguration baseConf, char marker) {
 
-        m_name = name;
+        m_baseConf = baseConf;
+        m_marker = marker;
     }
 
     /**
-     * Returns the name of the basic result types for the diff output.<p>
-     * 
-     * @see java.lang.Object#toString()
-     * 
-     * @return the name of the basic result types for the diff output
+     * @see com.alkacon.diff.I_TextDiffConfiguration#getChangedCharMarker()
      */
-    public String toString() {
+    public char getChangedCharMarker() {
 
-        return m_name;
+        return m_marker;
     }
+
+    /**
+     * @see com.alkacon.diff.I_DiffConfiguration#getLinesBeforeSkip()
+     */
+    public int getLinesBeforeSkip() {
+
+        return m_baseConf.getLinesBeforeSkip();
+    }
+
+    /**
+     * @see com.alkacon.diff.I_DiffConfiguration#getMessageEqualLinesSkipped(int)
+     */
+    public String getMessageEqualLinesSkipped(int lines) {
+
+        return m_baseConf.getMessageEqualLinesSkipped(lines);
+    }
+
 }

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/DiffLineType.java,v $
+ * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/I_HtmlDiffConfiguration.java,v $
  * Date   : $Date: 2005/10/28 08:55:38 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,44 +32,27 @@
 package com.alkacon.diff;
 
 /**
- * Provides the basic result types for the diff output.<p>
+ * Configurates a Html Diff operation.<p>
+ * 
+ * Additionally provides styles names.
  */
-public final class DiffLineType {
-
-    /** Result type: Content added. */
-    public static final DiffLineType ADDED = new DiffLineType("added");
-
-    /** Result type: Content removed. */
-    public static final DiffLineType REMOVED = new DiffLineType("removed");
-
-    /** Result type: Content unchanged. */
-    public static final DiffLineType UNCHANGED = new DiffLineType("unchanged");
-
-    /** Result type: Lines skipped. */
-    public static final DiffLineType SKIPPED = new DiffLineType("skipped");
-
-    /** The String identifier for the name. */
-    private String m_name;
+interface I_HtmlDiffConfiguration extends I_DiffConfiguration {
 
     /**
-     * Creates a new basic result type with the given name.<p>
+     * Returns the style name to format a whole line.<p>
      * 
-     * @param name the name for the new result type
+     * @param type the line type, can be any {@link DiffLineType}
+     * 
+     * @return the style name for the given line type
      */
-    private DiffLineType(String name) {
-
-        m_name = name;
-    }
+    String getDivStyleName(DiffLineType type);
 
     /**
-     * Returns the name of the basic result types for the diff output.<p>
+     * Returns the style name to format a block in a line.<p>
      * 
-     * @see java.lang.Object#toString()
+     * @param type the line type, can not be {@link DiffLineType#SKIPPED}
      * 
-     * @return the name of the basic result types for the diff output
+     * @return the style name for the given line type
      */
-    public String toString() {
-
-        return m_name;
-    }
+    String getSpanStyleName(DiffLineType type);
 }

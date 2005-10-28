@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/TextDiffOutput.java,v $
- * Date   : $Date: 2005/10/20 07:32:38 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/10/28 08:55:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,46 +49,35 @@ public class TextDiffOutput implements I_DiffOutput {
     /** The current marked line. */
     private final StringBuffer m_markLine = new StringBuffer();
 
-    /** Indicates if lines should be marked. */
-    private boolean m_markLines;
-
     /** The writer to write the output to. */
-    private Writer m_writer;
+    private final Writer m_writer;
 
     /** The message to show when skipping lines. */
-    private String m_lineMessage;
+    private final I_TextDiffConfiguration m_config;
 
     /**
      * Creates a new text based diff output.<p>
      * 
      * @param writer the writer to write the result to
-     * @param markLines if <code>true</code>, changes in lines will be marked with a <code>'^'</code> char 
+     * @param config the configuration to use
      */
-    public TextDiffOutput(Writer writer, boolean markLines) {
-
-        this(writer, markLines, "equal lines skipped");
-    }
-
-    /**
-     * Creates a new text based diff output.<p>
-     * 
-     * @param writer the writer to write the result to
-     * @param markLines if <code>true</code>, changes in lines will be marked with a <code>'^'</code> char
-     * @param lineMessage a (loclized) String to output when skipping some lines
-     */
-    public TextDiffOutput(Writer writer, boolean markLines, String lineMessage) {
+    public TextDiffOutput(Writer writer, I_TextDiffConfiguration config) {
 
         m_writer = writer;
-        m_markLines = markLines;
-        m_lineMessage = lineMessage;
+        m_config = config;
     }
 
+    private boolean markLines() {
+        
+        return m_config.getChangedCharMarker() != ' ';
+    }
+    
     /**
      * @see com.alkacon.diff.I_DiffOutput#addChangedText(java.lang.String)
      */
     public void addChangedText(String text) throws Exception {
 
-        if (m_markLines) {
+        if (markLines()) {
             if (!m_currentLineHasChangedText) {
                 m_currentLineHasChangedText = true;
                 for (int i = 0; i < m_contentLine.length() - 4; i++) {
@@ -97,7 +86,7 @@ public class TextDiffOutput implements I_DiffOutput {
                 }
             }
             for (int i = 0; i < text.length(); i++) {
-                m_markLine.append('^');
+                m_markLine.append(m_config.getChangedCharMarker());
             }
         }
         m_contentLine.append(text);
@@ -108,7 +97,7 @@ public class TextDiffOutput implements I_DiffOutput {
      */
     public void addUnchangedText(String text) throws Exception {
 
-        if (m_markLines) {
+        if (markLines()) {
             if (m_currentLineHasChangedText) {
                 for (int i = 0; i < text.length(); i++) {
                     m_markLine.append(' ');
@@ -125,7 +114,7 @@ public class TextDiffOutput implements I_DiffOutput {
 
         m_writer.write(m_contentLine.toString());
         m_writer.write('\n');
-        if (m_markLines && m_currentLineHasChangedText) {
+        if (markLines() && m_currentLineHasChangedText) {
             if (m_markLine.length() > 0) {
                 m_writer.write("    ");
                 m_writer.write(m_markLine.toString());
@@ -139,7 +128,8 @@ public class TextDiffOutput implements I_DiffOutput {
      */
     public void skippedLines(int linesSkipped) throws Exception {
 
-        m_writer.write("(" + linesSkipped + ' ' + m_lineMessage + ")\n");
+        m_writer.write(m_config.getMessageEqualLinesSkipped(linesSkipped));
+        m_writer.write("\n");
     }
 
     /**
@@ -156,7 +146,7 @@ public class TextDiffOutput implements I_DiffOutput {
             m_contentLine.append("--- ");
         }
         m_currentLineHasChangedText = false;
-        if (m_markLines) {
+        if (markLines()) {
             m_markLine.setLength(0);
         }
     }

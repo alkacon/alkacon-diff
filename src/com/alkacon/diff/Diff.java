@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/Diff.java,v $
- * Date   : $Date: 2005/10/20 07:32:38 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/10/28 08:55:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,12 +56,12 @@ public final class Diff {
      * @param text1 the first text to compare 
      * @param text2 the second text to compare
      * @param output the result of the diff is written on this instance
-     * @param skipLineCount if this many lines are equals they are skipped, specify -1 to include complete text
+     * @param config the configuration to use
      * 
      * @throws Exception the differencing itself should normally not throw exceptions, but the
      *      methods on DiffOutput can
      */
-    public static void diff(String text1, String text2, I_DiffOutput output, int skipLineCount) throws Exception {
+    public static void diff(String text1, String text2, I_DiffOutput output, I_DiffConfiguration config) throws Exception {
 
         TextComparator leftComparator = new TextComparator(text1);
         TextComparator rightComparator = new TextComparator(text2);
@@ -81,8 +81,8 @@ public final class Diff {
 
                     // output contextLineCount number of lines (if available) or all lines if contextLineCount == -1
                     if (pos != 0) { // at start of file, skip immediately to first changes
-                        int beginContextEndPos = pos + skipLineCount;
-                        while ((pos < beginContextEndPos || skipLineCount == -1) && pos < nextChangedLine) {
+                        int beginContextEndPos = pos + config.getLinesBeforeSkip();
+                        while ((pos < beginContextEndPos || config.getLinesBeforeSkip() == -1) && pos < nextChangedLine) {
                             output.startLine(DiffLineType.UNCHANGED);
                             output.addUnchangedText(leftComparator.getLine(pos));
                             output.endLine();
@@ -91,8 +91,8 @@ public final class Diff {
                     }
 
                     // skip a number of lines
-                    if (skipLineCount >= 0) {
-                        int endContextStartPos = nextChangedLine - skipLineCount;
+                    if (config.getLinesBeforeSkip() >= 0) {
+                        int endContextStartPos = nextChangedLine - config.getLinesBeforeSkip();
                         if (endContextStartPos > pos + 1) { // the +1 is to avoid skipping just one line
                             output.skippedLines(endContextStartPos - pos);
                             pos = endContextStartPos;
@@ -143,7 +143,7 @@ public final class Diff {
 
             // output any remaining lines
             int endPos = pos;
-            while (pos < leftLineCount && (skipLineCount == -1 || pos < endPos + skipLineCount)) {
+            while (pos < leftLineCount && (config.getLinesBeforeSkip() == -1 || pos < endPos + config.getLinesBeforeSkip())) {
                 output.startLine(DiffLineType.UNCHANGED);
                 output.addUnchangedText(leftComparator.getLine(pos));
                 output.endLine();
@@ -162,33 +162,17 @@ public final class Diff {
      * 
      * @param text1 the first text to compare 
      * @param text2 the second text to compare
+     * @param config the configuration to use
      * 
      * @return the diff of the given two input texts in HTML format
      * 
      * @throws Exception the differencing itself should normally not throw exceptions, but the
      *      methods on DiffOutput can
      */
-    public static String diffAsHtml(String text1, String text2) throws Exception {
-
-        return diffAsHtml(text1, text2, -1);
-    }
-
-    /**
-     * Returns the diff of the given two input texts in HTML format.<p>
-     * 
-     * @param text1 the first text to compare 
-     * @param text2 the second text to compare
-     * @param skipLineCount if this many lines are equals they are skipped, specify -1 to include complete text
-     * 
-     * @return the diff of the given two input texts in HTML format
-     * 
-     * @throws Exception the differencing itself should normally not throw exceptions, but the
-     *      methods on DiffOutput can
-     */
-    public static String diffAsHtml(String text1, String text2, int skipLineCount) throws Exception {
+    public static String diffAsHtml(String text1, String text2, I_HtmlDiffConfiguration config) throws Exception {
 
         StringWriter writer = new StringWriter(4096);
-        diffAsHtml(text1, text2, writer, skipLineCount);
+        diffAsHtml(text1, text2, writer, config);
         return writer.toString();
     }
 
@@ -198,34 +182,16 @@ public final class Diff {
      * @param text1 the first text to compare 
      * @param text2 the second text to compare
      * @param writer the result of the diff is written on this writer
-     * @param skipLineCount if this many lines are equals they are skipped, specify -1 to include complete text
+     * @param config the configuration to use
      * 
      * @throws Exception the differencing itself should normally not throw exceptions, but the
      *      methods on DiffOutput can
      */
-    public static void diffAsHtml(String text1, String text2, Writer writer, int skipLineCount) throws Exception {
+    public static void diffAsHtml(String text1, String text2, Writer writer, I_HtmlDiffConfiguration config) throws Exception {
 
         XmlSaxWriter saxWriter = new XmlSaxWriter(writer);
-        I_DiffOutput output = new HtmlDiffOutput(saxWriter);
-        diff(text1, text2, output, skipLineCount);
-    }
-
-    /**
-     * Returns the diff of the given two input texts in plain text format.<p>
-     * 
-     * All lines of the input are included in the output.<p>
-     * 
-     * @param text1 the first text to compare 
-     * @param text2 the second text to compare
-     * 
-     * @return the diff of the given two input texts in plain text format
-     * 
-     * @throws Exception the differencing itself should normally not throw exceptions, but the
-     *      methods on DiffOutput can
-     */
-    public static String diffAsText(String text1, String text2) throws Exception {
-
-        return diffAsText(text1, text2, -1);
+        I_DiffOutput output = new HtmlDiffOutput(saxWriter, config);
+        diff(text1, text2, output, config);
     }
 
     /**
@@ -233,17 +199,17 @@ public final class Diff {
      * 
      * @param text1 the first text to compare 
      * @param text2 the second text to compare
-     * @param skipLineCount if this many lines are equals they are skipped, specify -1 to include complete text
+     * @param config the configuration to use
      * 
      * @return the diff of the given two input texts in plain text format
      * 
      * @throws Exception the differencing itself should normally not throw exceptions, but the
      *      methods on DiffOutput can
      */
-    public static String diffAsText(String text1, String text2, int skipLineCount) throws Exception {
+    public static String diffAsText(String text1, String text2, I_TextDiffConfiguration config) throws Exception {
 
         StringWriter writer = new StringWriter(4096);
-        diffAsText(text1, text2, writer, skipLineCount);
+        diffAsText(text1, text2, writer, config);
         return writer.toString();
     }
 
@@ -253,15 +219,15 @@ public final class Diff {
      * @param text1 the first text to compare 
      * @param text2 the second text to compare
      * @param writer the result of the diff is written on this writer
-     * @param skipLineCount if this many lines are equals they are skipped, specify -1 to include complete text
+     * @param config the configuration to use
      * 
      * @throws Exception the differencing itself should normally not throw exceptions, but the
      *      methods on DiffOutput can
      */
-    public static void diffAsText(String text1, String text2, Writer writer, int skipLineCount) throws Exception {
+    public static void diffAsText(String text1, String text2, Writer writer, I_TextDiffConfiguration config) throws Exception {
 
-        I_DiffOutput output = new TextDiffOutput(writer, true);
-        diff(text1, text2, output, skipLineCount);
+        I_DiffOutput output = new TextDiffOutput(writer, config);
+        diff(text1, text2, output, config);
     }
 
     private static StringBuffer concatLines(TextComparator comparator, int start, int count) {

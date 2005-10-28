@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.Locale;
 
 import junit.framework.TestCase;
 
@@ -14,7 +15,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.2.0
  */
@@ -72,6 +73,18 @@ public class TestCmsDiff extends TestCase {
         return new String(readFile(filename), encoding);
     }
 
+    private I_HtmlDiffConfiguration getHtmlDiffConfiguration() {
+
+        DiffConfiguration conf = new DiffConfiguration(
+            -1,
+            "com.alkacon.diff.messages",
+            "DIFF_EQUAL_LINES_SKIPPED_1",
+            Locale.ENGLISH);
+        HtmlDiffConfiguration htmlConf = new HtmlDiffConfiguration(conf);
+        htmlConf.setDivStyleNames("unchanged", "added", "removed", "skipped");
+        htmlConf.setSpanStyleNames(null, "added", "removed");
+        return htmlConf;
+    }
     /**
      * Simple test for the diff function.<p>
      * 
@@ -83,30 +96,33 @@ public class TestCmsDiff extends TestCase {
         in1 = readFile("com/alkacon/diff/testHtml_01a.html", "ISO-8859-1");
         in2 = readFile("com/alkacon/diff/testHtml_01b.html", "ISO-8859-1");
 
-        String result1 = Diff.diffAsHtml(in1, in2);
+        I_HtmlDiffConfiguration conf = getHtmlDiffConfiguration();
+        String result1 = Diff.diffAsHtml(in1, in2, conf);
         System.out.println(result1);
 
-        String result2 = Diff.diffAsText(in1, in2);
+        I_TextDiffConfiguration textConf = new TextDiffConfiguration(conf, '^');
+        String result2 = Diff.diffAsText(in1, in2, textConf);
         System.out.println(result2);
     }
-    
+
     /**
      * Simple test for the diff function with indentation output.<p>
      * 
      * @throws Exception if the test fails
      */
     public void testDiffWithIndent() throws Exception {
-        
+
         String in1, in2;
         in1 = readFile("com/alkacon/diff/testHtml_01a.html", "ISO-8859-1");
         in2 = readFile("com/alkacon/diff/testHtml_01b.html", "ISO-8859-1");
-        
+
         XmlSaxWriter saxWriter = new XmlSaxWriter(new StringWriter());
         saxWriter.setIndentXml(true);
-        I_DiffOutput output = new HtmlDiffOutput(saxWriter);
-                
-        Diff.diff(in1, in2, output, -1);
-        
+        I_HtmlDiffConfiguration conf = getHtmlDiffConfiguration();
+        I_DiffOutput output = new HtmlDiffOutput(saxWriter, conf);
+
+        Diff.diff(in1, in2, output, conf);
+
         String result1 = saxWriter.getWriter().toString();
         System.out.println(result1);
     }

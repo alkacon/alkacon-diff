@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/HtmlDiffOutput.java,v $
- * Date   : $Date: 2005/10/20 07:32:38 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/10/28 08:55:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,14 +45,19 @@ public class HtmlDiffOutput implements I_DiffOutput {
     /** The type of the current line. */
     private DiffLineType m_currentLineType;
 
+    /** The configuration to use. */
+    private I_HtmlDiffConfiguration m_config;
+
     /**
      * Creates a new HTML Diff output based on the given XML content handler.<p>
      * 
      * @param handler the content handler to use
+     * @param config the configuration to use
      */
-    public HtmlDiffOutput(ContentHandler handler) {
+    public HtmlDiffOutput(ContentHandler handler, I_HtmlDiffConfiguration config) {
 
-        this.m_handler = handler;
+        m_handler = handler;
+        m_config = config;
     }
 
     /**
@@ -61,7 +66,8 @@ public class HtmlDiffOutput implements I_DiffOutput {
     public void addChangedText(String text) throws Exception {
 
         AttributesImpl attrs = new AttributesImpl();
-        attrs.addAttribute("", "class", "class", "CDATA", "diff-" + m_currentLineType.toString());
+        // span.diff-[added|removed]
+        attrs.addAttribute("", "class", "class", "CDATA", m_config.getSpanStyleName(m_currentLineType));
         m_handler.startElement("", "span", "span", attrs);
         m_handler.characters(text.toCharArray(), 0, text.length());
         m_handler.endElement("", "span", "span");
@@ -72,7 +78,16 @@ public class HtmlDiffOutput implements I_DiffOutput {
      */
     public void addUnchangedText(String text) throws Exception {
 
-        m_handler.characters(text.toCharArray(), 0, text.length());
+        if (m_config.getSpanStyleName(DiffLineType.UNCHANGED) != null) {
+            AttributesImpl attrs = new AttributesImpl();
+            // span.diff-[unchanged]
+            attrs.addAttribute("", "class", "class", "CDATA", m_config.getSpanStyleName(DiffLineType.UNCHANGED));
+            m_handler.startElement("", "span", "span", attrs);
+            m_handler.characters(text.toCharArray(), 0, text.length());
+            m_handler.endElement("", "span", "span");
+        } else {
+            m_handler.characters(text.toCharArray(), 0, text.length());
+        }
     }
 
     /**
@@ -88,10 +103,11 @@ public class HtmlDiffOutput implements I_DiffOutput {
      */
     public void skippedLines(int linesSkipped) throws Exception {
 
-        AttributesImpl attrs = new AttributesImpl();
-        attrs.addAttribute("", "class", "class", "CDATA", "diff-skipped");
+        AttributesImpl attrs = new AttributesImpl();        
+        // div.diff-skipped
+        attrs.addAttribute("", "class", "class", "CDATA", m_config.getDivStyleName(DiffLineType.SKIPPED)); 
         m_handler.startElement("", "div", "div", attrs);
-        String message = "(" + linesSkipped + " empty lines skipped)";
+        String message = m_config.getMessageEqualLinesSkipped(linesSkipped);
         m_handler.characters(message.toCharArray(), 0, message.length());
         m_handler.endElement("", "div", "div");
     }
@@ -101,9 +117,10 @@ public class HtmlDiffOutput implements I_DiffOutput {
      */
     public void startLine(DiffLineType type) throws Exception {
 
-        this.m_currentLineType = type;
+        m_currentLineType = type;
         AttributesImpl attrs = new AttributesImpl();
-        attrs.addAttribute("", "class", "class", "CDATA", "diff-" + type.toString());
+        // div.diff-[unchanged|added|removed]
+        attrs.addAttribute("", "class", "class", "CDATA", m_config.getDivStyleName(type));
         m_handler.startElement("", "div", "div", attrs);
     }
 }
