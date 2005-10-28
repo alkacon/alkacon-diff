@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/I_HtmlDiffConfiguration.java,v $
- * Date   : $Date: 2005/10/28 08:55:38 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/10/28 09:17:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.alkacon.diff;
  * 
  * Additionally provides styles names.
  */
-interface I_HtmlDiffConfiguration extends I_DiffConfiguration {
+public interface I_HtmlDiffConfiguration extends I_DiffConfiguration {
 
     /**
      * Returns the style name to format a whole line.<p>

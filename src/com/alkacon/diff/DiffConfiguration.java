@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/DiffConfiguration.java,v $
- * Date   : $Date: 2005/10/28 08:55:38 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/10/28 09:17:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ public class DiffConfiguration implements I_DiffConfiguration {
      * @param messageKey the key for a message like: '({0} equal skipped lines)'
      * @param locale the locale to use
      */
-    protected DiffConfiguration(int lines, String messageBundle, String messageKey, Locale locale) {
+    public DiffConfiguration(int lines, String messageBundle, String messageKey, Locale locale) {
 
         m_lines = lines;
         m_locale = locale;

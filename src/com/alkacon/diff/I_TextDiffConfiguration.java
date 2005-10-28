@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/I_TextDiffConfiguration.java,v $
- * Date   : $Date: 2005/10/28 08:55:38 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/10/28 09:17:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.alkacon.diff;
  * 
  * Additionally provides a changed char marker.
  */
-interface I_TextDiffConfiguration extends I_DiffConfiguration {
+public interface I_TextDiffConfiguration extends I_DiffConfiguration {
 
     /**
      * Returns the marker to use to highlight changed chars.<p>

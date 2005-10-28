@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/I_DiffConfiguration.java,v $
- * Date   : $Date: 2005/10/28 08:55:38 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/10/28 09:17:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.alkacon.diff;
  * 
  * Provides localized messages and number of lines to show before skipping.
  */
-interface I_DiffConfiguration {
+public interface I_DiffConfiguration {
 
     /**
      * Returns the number of lines to show before skipping.<p>
