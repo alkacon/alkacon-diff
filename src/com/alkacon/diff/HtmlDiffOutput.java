@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/HtmlDiffOutput.java,v $
- * Date   : $Date: 2005/10/28 08:55:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/11/10 15:10:42 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,6 +83,9 @@ public class HtmlDiffOutput implements I_DiffOutput {
             // span.diff-[unchanged]
             attrs.addAttribute("", "class", "class", "CDATA", m_config.getSpanStyleName(DiffLineType.UNCHANGED));
             m_handler.startElement("", "span", "span", attrs);
+            if ((text == null) || (text.length() == 0)) {
+                text = " ";
+            }
             m_handler.characters(text.toCharArray(), 0, text.length());
             m_handler.endElement("", "span", "span");
         } else {
@@ -105,10 +108,17 @@ public class HtmlDiffOutput implements I_DiffOutput {
 
         AttributesImpl attrs = new AttributesImpl();        
         // div.diff-skipped
-        attrs.addAttribute("", "class", "class", "CDATA", m_config.getDivStyleName(DiffLineType.SKIPPED)); 
+        attrs.addAttribute("", "class", "class", "CDATA", m_config.getDivStyleName(DiffLineType.SKIPPED));
+        String nbsp = " ";
+        m_handler.startElement("", "div", "div", attrs);
+        m_handler.characters(nbsp.toCharArray(), 0, nbsp.length());
+        m_handler.endElement("", "div", "div");
         m_handler.startElement("", "div", "div", attrs);
         String message = m_config.getMessageEqualLinesSkipped(linesSkipped);
         m_handler.characters(message.toCharArray(), 0, message.length());
+        m_handler.endElement("", "div", "div");
+        m_handler.startElement("", "div", "div", attrs);
+        m_handler.characters(nbsp.toCharArray(), 0, nbsp.length());
         m_handler.endElement("", "div", "div");
     }
 
