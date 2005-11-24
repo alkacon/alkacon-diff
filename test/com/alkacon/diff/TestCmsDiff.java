@@ -15,7 +15,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.2.0
  */
@@ -76,7 +76,7 @@ public class TestCmsDiff extends TestCase {
     private I_HtmlDiffConfiguration getHtmlDiffConfiguration() {
 
         DiffConfiguration conf = new DiffConfiguration(
-            -1,
+            1,
             "com.alkacon.diff.messages",
             "DIFF_EQUAL_LINES_SKIPPED_1",
             Locale.ENGLISH);

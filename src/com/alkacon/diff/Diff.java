@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/Diff.java,v $
- * Date   : $Date: 2005/10/28 08:55:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/11/24 15:35:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,8 @@ import org.eclipse.compare.rangedifferencer.RangeDifferencer;
  */
 public final class Diff {
 
+    /** The minimum number of lines to skip if equal. */
+    private static final int MIN_EQUAL_LINES = 3;
     /**
      * Hides the public contructor.<p> 
      */
@@ -82,7 +84,7 @@ public final class Diff {
                     // output contextLineCount number of lines (if available) or all lines if contextLineCount == -1
                     if (pos != 0) { // at start of file, skip immediately to first changes
                         int beginContextEndPos = pos + config.getLinesBeforeSkip();
-                        while ((pos < beginContextEndPos || config.getLinesBeforeSkip() == -1) && pos < nextChangedLine) {
+                        while ((pos < beginContextEndPos || config.getLinesBeforeSkip() == -1) && (pos + MIN_EQUAL_LINES < nextChangedLine)) {
                             output.startLine(DiffLineType.UNCHANGED);
                             output.addUnchangedText(leftComparator.getLine(pos));
                             output.endLine();
@@ -93,7 +95,7 @@ public final class Diff {
                     // skip a number of lines
                     if (config.getLinesBeforeSkip() >= 0) {
                         int endContextStartPos = nextChangedLine - config.getLinesBeforeSkip();
-                        if (endContextStartPos > pos + 1) { // the +1 is to avoid skipping just one line
+                        if (endContextStartPos >= pos + MIN_EQUAL_LINES) {
                             output.skippedLines(endContextStartPos - pos);
                             pos = endContextStartPos;
                         }
@@ -143,14 +145,26 @@ public final class Diff {
 
             // output any remaining lines
             int endPos = pos;
-            while (pos < leftLineCount && (config.getLinesBeforeSkip() == -1 || pos < endPos + config.getLinesBeforeSkip())) {
+            int beginContextEndPos = endPos + config.getLinesBeforeSkip();
+            while ((pos < beginContextEndPos || config.getLinesBeforeSkip() == -1) && (pos + MIN_EQUAL_LINES < leftLineCount + config.getLinesBeforeSkip())) {
                 output.startLine(DiffLineType.UNCHANGED);
                 output.addUnchangedText(leftComparator.getLine(pos));
                 output.endLine();
                 pos++;
             }
-            if (pos < leftLineCount) {
-                output.skippedLines(leftLineCount - pos);
+            int endContextStartPos = leftLineCount;
+            // skip remaining lines
+            if (config.getLinesBeforeSkip() >= 0 && endContextStartPos >= pos + MIN_EQUAL_LINES) {
+                output.skippedLines(endContextStartPos - pos);
+                pos = endContextStartPos;
+            } else {
+                // out remaining lines
+                while (pos < leftLineCount) {
+                    output.startLine(DiffLineType.UNCHANGED);
+                    output.addUnchangedText(leftComparator.getLine(pos));
+                    output.endLine();
+                    pos++;
+                }
             }
         }
     }
