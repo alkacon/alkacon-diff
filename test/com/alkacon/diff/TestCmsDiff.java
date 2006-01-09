@@ -15,7 +15,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.2.0
  */
@@ -85,6 +85,7 @@ public class TestCmsDiff extends TestCase {
         htmlConf.setSpanStyleNames(null, "added", "removed");
         return htmlConf;
     }
+    
     /**
      * Simple test for the diff function.<p>
      * 
@@ -105,6 +106,28 @@ public class TestCmsDiff extends TestCase {
         System.out.println(result2);
     }
 
+    /**
+     * Simple test for the diff function.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testDiff2() throws Exception {
+
+        String in1, in2;
+        in1 = "";
+        in2 = "nonempty string";
+
+        I_HtmlDiffConfiguration conf = getHtmlDiffConfiguration();
+        String result1 = Diff.diffAsHtml(in1, in2, conf);
+        // difference should not be empty
+        assertFalse("".equals(result1));
+        System.out.println(result1);
+
+        I_TextDiffConfiguration textConf = new TextDiffConfiguration(conf, '^');
+        String result2 = Diff.diffAsText(in1, in2, textConf);
+        assertFalse("".equals(result2));
+    }
+    
     /**
      * Simple test for the diff function with indentation output.<p>
      * 
