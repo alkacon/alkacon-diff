@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/Diff.java,v $
- * Date   : $Date: 2005/11/24 15:35:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/01/12 11:49:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ public final class Diff {
             int diffIndex = 0;
 
             int leftLineCount = leftComparator.getRangeCount();
-            while (diffIndex < differences.length && pos < leftLineCount) {
+            do {
                 RangeDifference diff = differences[diffIndex];
 
                 if (diff.kind() == RangeDifference.CHANGE) {
@@ -141,7 +141,7 @@ public final class Diff {
 
                 pos = differences[diffIndex].leftEnd();
                 diffIndex++;
-            }
+            } while (diffIndex < differences.length && pos < leftLineCount);
 
             // output any remaining lines
             int endPos = pos;
