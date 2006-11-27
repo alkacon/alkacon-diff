@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/TextComparator.java,v $
- * Date   : $Date: 2005/10/20 07:32:38 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2006/11/27 09:32:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,17 +31,18 @@
 
 package com.alkacon.diff;
 
+import com.alkacon.diff.rangedifferencer.I_RangeComparator;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 
-import org.eclipse.compare.rangedifferencer.IRangeComparator;
 
 /**
  * Comparator for comparing text on a line-by-line basis.
  */
-class TextComparator implements IRangeComparator {
+class TextComparator implements I_RangeComparator {
 
     private String[] m_lines;
 
@@ -77,7 +78,7 @@ class TextComparator implements IRangeComparator {
     }
 
     /**
-     * @see org.eclipse.compare.rangedifferencer.IRangeComparator#getRangeCount()
+     * @see com.alkacon.diff.rangedifferencer.I_RangeComparator#getRangeCount()
      */
     public int getRangeCount() {
 
@@ -85,9 +86,9 @@ class TextComparator implements IRangeComparator {
     }
 
     /**
-     * @see org.eclipse.compare.rangedifferencer.IRangeComparator#rangesEqual(int, org.eclipse.compare.rangedifferencer.IRangeComparator, int)
+     * @see com.alkacon.diff.rangedifferencer.I_RangeComparator#rangesEqual(int, com.alkacon.diff.rangedifferencer.I_RangeComparator, int)
      */
-    public boolean rangesEqual(int thisIndex, IRangeComparator other, int otherIndex) {
+    public boolean rangesEqual(int thisIndex, I_RangeComparator other, int otherIndex) {
 
         String thisLine = getLine(thisIndex);
         String otherLine = ((TextComparator)other).getLine(otherIndex);
@@ -95,9 +96,9 @@ class TextComparator implements IRangeComparator {
     }
 
     /**
-     * @see org.eclipse.compare.rangedifferencer.IRangeComparator#skipRangeComparison(int, int, org.eclipse.compare.rangedifferencer.IRangeComparator)
+     * @see com.alkacon.diff.rangedifferencer.I_RangeComparator#skipRangeComparison(int, int, com.alkacon.diff.rangedifferencer.I_RangeComparator)
      */
-    public boolean skipRangeComparison(int length, int maxLength, IRangeComparator other) {
+    public boolean skipRangeComparison(int length, int maxLength, I_RangeComparator other) {
 
         return false;
     }

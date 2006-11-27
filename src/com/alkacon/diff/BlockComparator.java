@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/BlockComparator.java,v $
- * Date   : $Date: 2005/10/20 07:32:38 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2006/11/27 09:32:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,11 @@
 
 package com.alkacon.diff;
 
+import com.alkacon.diff.rangedifferencer.I_RangeComparator;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.compare.rangedifferencer.IRangeComparator;
 
 /**
  * A Comparator for diffing corresponding changes resulting from a line-based diff.<p>
@@ -45,7 +46,7 @@ import org.eclipse.compare.rangedifferencer.IRangeComparator;
  * This comparator has also a little bit of special treatment for HTML/XML tags,
  * that is it tries to treat tags as single entities to be compared.
  */
-class BlockComparator implements IRangeComparator {
+class BlockComparator implements I_RangeComparator {
 
     private List m_tokens;
 
@@ -58,7 +59,7 @@ class BlockComparator implements IRangeComparator {
     }
 
     /**
-     * @see org.eclipse.compare.rangedifferencer.IRangeComparator#getRangeCount()
+     * @see com.alkacon.diff.rangedifferencer.I_RangeComparator#getRangeCount()
      */
     public int getRangeCount() {
 
@@ -66,9 +67,9 @@ class BlockComparator implements IRangeComparator {
     }
 
     /**
-     * @see org.eclipse.compare.rangedifferencer.IRangeComparator#rangesEqual(int, org.eclipse.compare.rangedifferencer.IRangeComparator, int)
+     * @see com.alkacon.diff.rangedifferencer.I_RangeComparator#rangesEqual(int, com.alkacon.diff.rangedifferencer.I_RangeComparator, int)
      */
-    public boolean rangesEqual(int thisIndex, IRangeComparator other, int otherIndex) {
+    public boolean rangesEqual(int thisIndex, I_RangeComparator other, int otherIndex) {
 
         String thisToken = getToken(thisIndex);
         String otherToken = ((BlockComparator)other).getToken(otherIndex);
@@ -82,9 +83,9 @@ class BlockComparator implements IRangeComparator {
     }
 
     /**
-     * @see org.eclipse.compare.rangedifferencer.IRangeComparator#skipRangeComparison(int, int, org.eclipse.compare.rangedifferencer.IRangeComparator)
+     * @see com.alkacon.diff.rangedifferencer.I_RangeComparator#skipRangeComparison(int, int, com.alkacon.diff.rangedifferencer.I_RangeComparator)
      */
-    public boolean skipRangeComparison(int length, int maxLength, IRangeComparator other) {
+    public boolean skipRangeComparison(int length, int maxLength, I_RangeComparator other) {
 
         return false;
     }
