@@ -1,12 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/BlockComparator.java,v $
- * Date   : $Date: 2006/11/27 09:32:25 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/11/20 15:59:08 $
+ * Version: $Revision: 1.3 $
  *
- * This library is part of OpenCms -
- * the Open Source Content Mananagement System
- *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,9 +17,6 @@
  *
  * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
- *
- * For further information about OpenCms, please see the
- * project website: http://www.opencms.org
  * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
@@ -35,7 +29,6 @@ import com.alkacon.diff.rangedifferencer.I_RangeComparator;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 /**
  * A Comparator for diffing corresponding changes resulting from a line-based diff.<p>
@@ -217,13 +210,13 @@ class BlockComparator implements I_RangeComparator {
                     break;
                 case '/':
                     // special handling for (possible) closing HTML/XML tag
-                    if (currentWord.length() == 1 && currentWord.charAt(0) == '<') {
+                    if ((currentWord.length() == 1) && (currentWord.charAt(0) == '<')) {
                         currentWord.append(c);
                         break;
                     }
-                // else: no break so that code below gets executed
+                    // else: no break so that code below gets executed
                 case '>':
-                    if (currentWord.length() > 2 && currentWord.charAt(0) == '<' && currentWord.charAt(1) == '/') {
+                    if ((currentWord.length() > 2) && (currentWord.charAt(0) == '<') && (currentWord.charAt(1) == '/')) {
                         currentWord.append(c);
                         break;
                     }

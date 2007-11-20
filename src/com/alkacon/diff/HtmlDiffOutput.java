@@ -1,12 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/HtmlDiffOutput.java,v $
- * Date   : $Date: 2005/11/10 15:10:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/11/20 15:59:08 $
+ * Version: $Revision: 1.4 $
  *
- * This library is part of OpenCms -
- * the Open Source Content Mananagement System
- *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,9 +17,6 @@
  *
  * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
- *
- * For further information about OpenCms, please see the
- * project website: http://www.opencms.org
  * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
@@ -106,7 +100,7 @@ public class HtmlDiffOutput implements I_DiffOutput {
      */
     public void skippedLines(int linesSkipped) throws Exception {
 
-        AttributesImpl attrs = new AttributesImpl();        
+        AttributesImpl attrs = new AttributesImpl();
         // div.diff-skipped
         attrs.addAttribute("", "class", "class", "CDATA", m_config.getDivStyleName(DiffLineType.SKIPPED));
         String nbsp = " ";

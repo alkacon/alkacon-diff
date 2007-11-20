@@ -1,3 +1,27 @@
+/*
+ * File   : $Source: /alkacon/cvs/AlkaconDiff/test/com/alkacon/diff/TestDiff.java,v $
+ * Date   : $Date: 2007/11/20 15:59:08 $
+ * Version: $Revision: 1.1 $
+ *
+ * Copyright (c) 2007 Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software GmbH, please see the
+ * company website: http://www.alkacon.com
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package com.alkacon.diff;
 
@@ -15,18 +39,18 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.1 $
  * 
  * @since 6.2.0
  */
-public class TestCmsDiff extends TestCase {
+public class TestDiff extends TestCase {
 
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
      */
-    public TestCmsDiff(String arg0) {
+    public TestDiff(String arg0) {
 
         super(arg0);
     }
@@ -42,7 +66,7 @@ public class TestCmsDiff extends TestCase {
     public static byte[] readFile(String filename) throws IOException {
 
         // create input and output stream
-        InputStream in = TestCmsDiff.class.getClassLoader().getResourceAsStream(filename);
+        InputStream in = TestDiff.class.getClassLoader().getResourceAsStream(filename);
         if (in == null) {
             throw new FileNotFoundException(filename);
         }
@@ -85,7 +109,7 @@ public class TestCmsDiff extends TestCase {
         htmlConf.setSpanStyleNames(null, "added", "removed");
         return htmlConf;
     }
-    
+
     /**
      * Simple test for the diff function.<p>
      * 
@@ -127,7 +151,7 @@ public class TestCmsDiff extends TestCase {
         String result2 = Diff.diffAsText(in1, in2, textConf);
         assertFalse("".equals(result2));
     }
-    
+
     /**
      * Simple test for the diff function with indentation output.<p>
      * 

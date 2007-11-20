@@ -1,12 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/AlkaconDiff/src/com/alkacon/diff/Diff.java,v $
- * Date   : $Date: 2006/11/27 09:32:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/11/20 15:59:08 $
+ * Version: $Revision: 1.6 $
  *
- * This library is part of OpenCms -
- * the Open Source Content Mananagement System
- *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,9 +17,6 @@
  *
  * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
- *
- * For further information about OpenCms, please see the
- * project website: http://www.opencms.org
  * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
@@ -37,7 +31,6 @@ import com.alkacon.diff.rangedifferencer.RangeDifferencer;
 import java.io.StringWriter;
 import java.io.Writer;
 
-
 /**
  * Calculates the difference from two given input sources.<p>
  */
@@ -45,6 +38,7 @@ public final class Diff {
 
     /** The minimum number of lines to skip if equal. */
     private static final int MIN_EQUAL_LINES = 3;
+
     /**
      * Hides the public contructor.<p> 
      */
@@ -64,7 +58,8 @@ public final class Diff {
      * @throws Exception the differencing itself should normally not throw exceptions, but the
      *      methods on DiffOutput can
      */
-    public static void diff(String text1, String text2, I_DiffOutput output, I_DiffConfiguration config) throws Exception {
+    public static void diff(String text1, String text2, I_DiffOutput output, I_DiffConfiguration config)
+    throws Exception {
 
         TextComparator leftComparator = new TextComparator(text1);
         TextComparator rightComparator = new TextComparator(text2);
@@ -85,7 +80,8 @@ public final class Diff {
                     // output contextLineCount number of lines (if available) or all lines if contextLineCount == -1
                     if (pos != 0) { // at start of file, skip immediately to first changes
                         int beginContextEndPos = pos + config.getLinesBeforeSkip();
-                        while ((pos < beginContextEndPos || config.getLinesBeforeSkip() == -1) && (pos + MIN_EQUAL_LINES < nextChangedLine)) {
+                        while (((pos < beginContextEndPos) || (config.getLinesBeforeSkip() == -1))
+                            && (pos + MIN_EQUAL_LINES < nextChangedLine)) {
                             output.startLine(DiffLineType.UNCHANGED);
                             output.addUnchangedText(leftComparator.getLine(pos));
                             output.endLine();
@@ -112,7 +108,7 @@ public final class Diff {
 
                     StringBuffer leftBlock = null;
                     StringBuffer rightBlock = null;
-                    if (diff.leftLength() > 0 && diff.rightLength() > 0) {
+                    if ((diff.leftLength() > 0) && (diff.rightLength() > 0)) {
                         leftBlock = concatLines(leftComparator, diff.leftStart(), diff.leftLength());
                         rightBlock = concatLines(rightComparator, diff.rightStart(), diff.rightLength());
                     }
@@ -142,12 +138,13 @@ public final class Diff {
 
                 pos = differences[diffIndex].leftEnd();
                 diffIndex++;
-            } while (diffIndex < differences.length && pos < leftLineCount);
+            } while ((diffIndex < differences.length) && (pos < leftLineCount));
 
             // output any remaining lines
             int endPos = pos;
             int beginContextEndPos = endPos + config.getLinesBeforeSkip();
-            while ((pos < beginContextEndPos || config.getLinesBeforeSkip() == -1) && (pos + MIN_EQUAL_LINES < leftLineCount + config.getLinesBeforeSkip())) {
+            while (((pos < beginContextEndPos) || (config.getLinesBeforeSkip() == -1))
+                && (pos + MIN_EQUAL_LINES < leftLineCount + config.getLinesBeforeSkip())) {
                 output.startLine(DiffLineType.UNCHANGED);
                 output.addUnchangedText(leftComparator.getLine(pos));
                 output.endLine();
@@ -155,7 +152,7 @@ public final class Diff {
             }
             int endContextStartPos = leftLineCount;
             // skip remaining lines
-            if (config.getLinesBeforeSkip() >= 0 && endContextStartPos >= pos + MIN_EQUAL_LINES) {
+            if ((config.getLinesBeforeSkip() >= 0) && (endContextStartPos >= pos + MIN_EQUAL_LINES)) {
                 output.skippedLines(endContextStartPos - pos);
                 pos = endContextStartPos;
             } else {
@@ -202,7 +199,8 @@ public final class Diff {
      * @throws Exception the differencing itself should normally not throw exceptions, but the
      *      methods on DiffOutput can
      */
-    public static void diffAsHtml(String text1, String text2, Writer writer, I_HtmlDiffConfiguration config) throws Exception {
+    public static void diffAsHtml(String text1, String text2, Writer writer, I_HtmlDiffConfiguration config)
+    throws Exception {
 
         XmlSaxWriter saxWriter = new XmlSaxWriter(writer);
         I_DiffOutput output = new HtmlDiffOutput(saxWriter, config);
@@ -239,7 +237,8 @@ public final class Diff {
      * @throws Exception the differencing itself should normally not throw exceptions, but the
      *      methods on DiffOutput can
      */
-    public static void diffAsText(String text1, String text2, Writer writer, I_TextDiffConfiguration config) throws Exception {
+    public static void diffAsText(String text1, String text2, Writer writer, I_TextDiffConfiguration config)
+    throws Exception {
 
         I_DiffOutput output = new TextDiffOutput(writer, config);
         diff(text1, text2, output, config);
@@ -308,7 +307,7 @@ public final class Diff {
             pos = diff.leftEnd();
         }
 
-        if (diff == null || diff.leftEnd() < leftBlockComparator.getRangeCount()) {
+        if ((diff == null) || (diff.leftEnd() < leftBlockComparator.getRangeCount())) {
             int start = 0;
             if (diff != null) {
                 start = diff.leftEnd();
