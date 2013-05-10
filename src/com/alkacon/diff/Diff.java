@@ -208,6 +208,50 @@ public final class Diff {
     }
 
     /**
+     * Returns the diff of the given two input texts in HTML format suitable. The CSS that is associated is applied as
+     * inline CSS.<p>
+     * 
+     * All lines of the input are included in the output.<p>
+     * 
+     * @param text1 the first text to compare
+     * @param text2 the second text to compare
+     * @param config the configuration to use
+     * 
+     * @return the diff of the given two input texts in HTML format
+     * 
+     * @throws Exception the differencing itself should normally not throw exceptions, but the
+     *         methods on DiffOutput can
+     */
+    public static String diffAsInlineHtml(String text1, String text2, I_InlineHtmlDiffConfiguration config) throws Exception {
+        StringWriter writer = new StringWriter(4096);
+        diffAsInlineHtml(text1, text2, writer, config);
+        return writer.toString();
+    }
+
+    /**
+     * Diffs two texts, outputting the result as HTML to the specified writer instance. The CSS that is associated is
+     * applied as inline CSS.<p>
+     * 
+     * @param text1 the first text to compare
+     * @param text2 the second text to compare
+     * @param writer the result of the diff is written on this writer
+     * @param config the configuration to use
+     * 
+     * @throws Exception the differencing itself should normally not throw exceptions, but the
+     *         methods on DiffOutput can
+     */
+    public static void diffAsInlineHtml(String text1, String text2, Writer writer, I_InlineHtmlDiffConfiguration config)
+    throws Exception {
+        if (null == text1 || null == text2 || null == writer || null == config) {
+            throw new NullPointerException("none of the arguments can be null");
+        }
+        
+        XmlSaxWriter saxWriter = new XmlSaxWriter(writer);
+        I_DiffOutput output = new InlineHtmlDiffOutput(saxWriter, config);
+        diff(text1, text2, output, config);
+    }
+
+    /**
      * Returns the diff of the given two input texts in plain text format.<p>
      * 
      * @param text1 the first text to compare 

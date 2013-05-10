@@ -2,28 +2,28 @@
 
 <project name="Alkacon Diff" default="jar" basedir=".">
 
-    <property name="version.number"             		value="0.9.2" />
-    <property name="java.target.version"                value="1.5" />
-	<property name="app.name" 							value="opencms" />
+    <property name="version.number"                     value="0.9.3" />
+    <property name="java.source.version"                value="1.6" />
+    <property name="java.target.version"                value="1.6" />
+    <property name="app.name"                           value="opencms" />
     
-    <property name="alkacon.input" 						location="${basedir}" />
-	<property name="alkacon.output" 					location="${basedir}/../BuildAlkacon" />
+    <property name="alkacon.input"                      location="${basedir}" />
+    <property name="alkacon.output"                     location="${basedir}/../BuildAlkacon" />
 
     <property name="alkacon.output.classes"             location="${alkacon.output}/diff-classes" />
     <property name="alkacon.output.tests"               location="${alkacon.output}/diff-test" />
     <property name="alkacon.output.jars"                location="${alkacon.output}/diff-jars" />
     <property name="alkacon.output.src"                 location="${alkacon.output}/diff-src" />
 
-    <property name="excludes"                   		value="**/CVS/*,**/.nbattrs,**/.project,**/.classpath" />
+    <property name="excludes"                           value="**/CVS/*,**/.nbattrs,**/.project,**/.classpath" />
     
     <property environment="env" />
-	
-	<!-- 
-	  -	Checks if all required libraries are available
-	  -->
+
+    <!-- 
+      -    Checks if all required libraries are available
+      -->
     <target name="init" >
-    	
-    	<echo message="Building Alkacon Diff Library ${version.number}" />
+        <echo message="Building Alkacon Diff Library ${version.number}" />
         <echo message=" " />
         <echo message="Input directory is: ${alkacon.input}" />
         <echo message="Output directory is: ${alkacon.output}/diff-*" />
@@ -33,113 +33,114 @@
     </target>
 
     <target name="clean" description="Delete existing output directories">
-
         <delete dir="${alkacon.output.classes}" />
         <delete dir="${alkacon.output.tests}" />
         <delete dir="${alkacon.output.jars}" />
         <delete dir="${alkacon.output.src}" />
     </target>
-    		
+            
     <target name="compile" depends="init" description="Compile the classes">
-    	
-        <mkdir dir="${alkacon.output.classes}" />    	
-    	
+        <mkdir dir="${alkacon.output.classes}" />
+
         <uptodate property="classesUpToDate" targetfile="${alkacon.output.jars}/alkacon-diff-${version.number}.jar">
-        	<srcfiles dir= "${alkacon.input}/src" includes="**/*.java" excludes="${build.excludes},${excludes}"/>
-        	<srcfiles dir= "${alkacon.input}/src" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd,**/*.sql" excludes="${excludes}" />
+            <srcfiles dir= "${alkacon.input}/src" includes="**/*.java" excludes="${build.excludes},${excludes}"/>
+            <srcfiles dir= "${alkacon.input}/src" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd,**/*.sql" excludes="${excludes}" />
         </uptodate>
-            	
-       	<javac
+
+           <javac
             srcdir="${alkacon.input}/src"
             destdir="${alkacon.output.classes}"
             debug="on"
             optimize="on"
             deprecation="on"
-       		source="1.4"
-    		target="${java.target.version}">
-       		<!-- compilerarg value="-Xlint:unchecked"/ -->
-       	</javac>
-		
+            source="${java.source.version}"
+            target="${java.target.version}"
+            includeantruntime="false">
+            <!-- compilerarg value="-Xlint:unchecked"/ -->
+           </javac>
+        
         <copy todir="${alkacon.output.classes}">
             <fileset dir="${alkacon.input}/src" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd,**/*.sql" excludes="${excludes}"/>
-        </copy>              
+        </copy>
     </target>
 
     <target name="jar" 
-    	depends="compile" description="Generate the .jar files">
-    	
+        depends="compile" description="Generate the .jar files">
+        
         <mkdir dir="${alkacon.output.jars}" />
-            	
+                
         <jar
             jarfile="${alkacon.output.jars}/alkacon-diff-${version.number}.jar"
             basedir="${alkacon.output.classes}"
             includes="com/alkacon/**" 
-        	manifest="${basedir}/manifest.txt" /> 
-    	
+            manifest="${basedir}/manifest.txt" /> 
+        
     </target>
 
     <target name="srcdist" 
-    	description="Creates a source distribution ZIP">
-    	
-    	<echo message="Building source distribution " />
+        description="Creates a source distribution ZIP">
+        
+        <echo message="Building source distribution " />
         <echo message=" " />
         <echo message="Input directory is: ${alkacon.input}" />
         <echo message="Output directory is: ${alkacon.output.src}" />
-		
+        
         <mkdir dir="${alkacon.output.src}" />                    
-		
-    	<delete file="${alkacon.output.src}/alkacon-diff-${version.number}_src.zip" failonerror="no"/>
+        
+        <delete file="${alkacon.output.src}/alkacon-diff-${version.number}_src.zip" failonerror="no"/>
         <zip destfile="${alkacon.output.src}/alkacon-diff-${version.number}_src.zip">
-        	<zipfileset dir="${alkacon.input}/src" excludes="${excludes}" prefix="src" />
-        	<zipfileset dir="${alkacon.input}/test" excludes="${excludes}" prefix="test" />
+            <zipfileset dir="${alkacon.input}/src" excludes="${excludes}" prefix="src" />
+            <zipfileset dir="${alkacon.input}/test" excludes="${excludes}" prefix="test" />
             <zipfileset dir="${alkacon.input}" includes="build.xml,manifest.txt"/>
         </zip>
     </target>
-		
+        
     <target name="compile-tests" depends="jar" description="Compile the test classes">
-    	
-        <mkdir dir="${alkacon.output.tests}" />    	
-    	
-       	<javac
+        
+        <mkdir dir="${alkacon.output.tests}" />        
+        
+           <javac
             srcdir="${alkacon.input}/test"
             destdir="${alkacon.output.tests}"
             excludes="**/data/**"
             debug="on"
             optimize="on"
             deprecation="on" 
-       		source="1.4"
-    		target="${java.target.version}">
-       	    <classpath>
-     	      <fileset dir="${alkacon.output}">
-     	        <include name="**/*.jar"/>
-     	      </fileset>
-       	    </classpath>
-       	</javac>
-		
+            source="${java.source.version}"
+            target="${java.target.version}"
+            includeantruntime="false">
+
+               <classpath>
+               <fileset dir="${alkacon.output}">
+                 <include name="**/*.jar"/>
+               </fileset>
+               </classpath>
+           </javac>
+        
         <copy todir="${alkacon.output.tests}">
             <fileset dir="${alkacon.input}/test" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd,**/*.html" excludes="${excludes},**/data/**"/>
         </copy>
     </target>
-	
-	<target name="unittests" depends="compile-tests"
-		description="Runs the Junit test cases">
-		
-		<junit showoutput="yes" printsummary="yes" fork="yes" haltonfailure="no" haltonerror="no">
-			<classpath>
-				<pathelement path="${alkacon.output.tests}"/>
-        	    <fileset dir="${alkacon.output}">
-	       	        <include name="**/*.jar"/>
-	       	    </fileset>
-	       	</classpath>
-			
-			<formatter type="plain" />
-			
-			<test name="com.alkacon.diff.TestDiff" />			
-		</junit>
-	</target>
-	
+    
+    <target name="unittests" depends="compile-tests"
+        description="Runs the Junit test cases">
+        
+        <junit showoutput="yes" printsummary="yes" fork="yes" haltonfailure="no" haltonerror="no">
+            <classpath>
+                <pathelement path="${alkacon.output.tests}"/>
+                <fileset dir="${alkacon.output}">
+                       <include name="**/*.jar"/>
+                   </fileset>
+               </classpath>
+            
+            <formatter type="plain" />
+            
+            <test name="com.alkacon.diff.TestDiff" />            
+        </junit>
+    </target>
+    
     <target name="tomcat.update" depends="jar" 
-    	description="Copy updated files to Tomcat directory">
+        description="Copy updated files to Tomcat directory">
 
         <condition property="tomcat.home" value="${env.TOMCAT_HOME}">
             <available file="${env.TOMCAT_HOME}" type="dir"/>
@@ -149,10 +150,10 @@
             <available file="${env.CATALINA_HOME}" type="dir"/>
         </condition>
 
-    	<echo message="Tomcat home is: ${tomcat.home}" />        
-    	<echo message="Application name is: ${app.name}" />        
+        <echo message="Tomcat home is: ${tomcat.home}" />        
+        <echo message="Application name is: ${app.name}" />        
 
-    	<copy todir="${tomcat.home}/webapps/${app.name}/WEB-INF/lib">
+        <copy todir="${tomcat.home}/webapps/${app.name}/WEB-INF/lib">
             <fileset dir="${alkacon.output.jars}">
                 <include name="*.jar"/>
             </fileset>
