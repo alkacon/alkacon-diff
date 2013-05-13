@@ -41,7 +41,7 @@ import java.util.List;
  */
 class BlockComparator implements I_RangeComparator {
 
-    private List m_tokens;
+    private List<String> m_tokens;
 
     /**
      * @param text should contain the lines of text concatenated with a "\n" in between them
@@ -106,11 +106,11 @@ class BlockComparator implements I_RangeComparator {
     public String substring(int startToken, int endToken) {
 
         if (startToken == endToken) {
-            return (String)m_tokens.get(startToken);
+            return m_tokens.get(startToken);
         } else {
             StringBuffer result = new StringBuffer();
             for (int i = startToken; i < endToken; i++) {
-                result.append((String)m_tokens.get(i));
+                result.append(m_tokens.get(i));
             }
             return result.toString();
         }
@@ -143,13 +143,13 @@ class BlockComparator implements I_RangeComparator {
     public String[] substringSplitted(int startToken, int endToken) {
 
         if (startToken == endToken) {
-            return new String[] {(String)m_tokens.get(startToken)};
+            return new String[] {m_tokens.get(startToken)};
         } else {
             int resultPos = -1;
             String[] result = null;
             StringBuffer resultBuffer = new StringBuffer();
             for (int i = startToken; i < endToken; i++) {
-                String token = (String)m_tokens.get(i);
+                String token = m_tokens.get(i);
                 if (token.equals("\n")) {
                     if (resultBuffer.length() > 0) {
                         result = grow(result, 2);
@@ -177,7 +177,7 @@ class BlockComparator implements I_RangeComparator {
     private String getToken(int i) {
 
         if (i < m_tokens.size()) {
-            return (String)m_tokens.get(i);
+            return m_tokens.get(i);
         }
         return "";
     }
@@ -193,9 +193,9 @@ class BlockComparator implements I_RangeComparator {
         }
     }
 
-    private ArrayList splitLineTokens(StringBuffer text) {
+    private ArrayList<String> splitLineTokens(StringBuffer text) {
 
-        ArrayList tokens = new ArrayList(100);
+        ArrayList<String> tokens = new ArrayList<String>(100);
         StringBuffer currentWord = new StringBuffer(100);
 
         for (int i = 0; i < text.length(); i++) {

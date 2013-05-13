@@ -46,7 +46,7 @@ class TextComparator implements I_RangeComparator {
 
         BufferedReader reader = new BufferedReader(new StringReader(text));
 
-        ArrayList lines = new ArrayList(50);
+        ArrayList<String> lines = new ArrayList<String>(50);
         try {
             String line = reader.readLine();
             while (line != null) {
@@ -56,7 +56,7 @@ class TextComparator implements I_RangeComparator {
         } catch (IOException e) {
             throw new RuntimeException("Unexpected: got exception while reading from String object.", e);
         }
-        m_lines = (String[])lines.toArray(new String[lines.size()]);
+        m_lines = lines.toArray(new String[lines.size()]);
     }
 
     /**

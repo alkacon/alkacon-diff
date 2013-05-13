@@ -35,8 +35,8 @@ import java.util.Map;
 public class HtmlDiffConfiguration implements I_HtmlDiffConfiguration {
 
     private final I_DiffConfiguration m_baseConf;
-    private Map m_divStyles = new HashMap();
-    private Map m_spanStyles = new HashMap();
+    private Map<DiffLineType, String> m_divStyles = new HashMap<DiffLineType, String>();
+    private Map<DiffLineType, String> m_spanStyles = new HashMap<DiffLineType, String>();
 
     /**
      * Creates a new configuration object.<p> 
@@ -81,7 +81,7 @@ public class HtmlDiffConfiguration implements I_HtmlDiffConfiguration {
             // throw NPE if missing
             return m_spanStyles.get(type).toString();
         } else {
-            return (String)m_spanStyles.get(type);
+            return m_spanStyles.get(type);
         }
     }
 

@@ -33,7 +33,7 @@ class DifferencesIterator {
     int m_fIndex;
 
     /** (undocumented variable). */
-    List m_fRange;
+    List<RangeDifference> m_fRange;
 
     /**
      * Creates a differences iterator on an array of <code>RangeDifference</code>s.
@@ -44,7 +44,7 @@ class DifferencesIterator {
 
         m_fArray = differenceRanges;
         m_fIndex = 0;
-        m_fRange = new ArrayList();
+        m_fRange = new ArrayList<RangeDifference>();
         if (m_fIndex < m_fArray.length) {
             m_fDifference = m_fArray[m_fIndex++];
         } else {
