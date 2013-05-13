@@ -3,6 +3,8 @@
 <project name="Alkacon Diff" default="jar" basedir=".">
 
     <property name="version.number"                     value="0.9.3" />
+	<property name="java.source.version"                value="1.6" />
+    <property name="java.target.version"                value="1.6" />
     <property name="app.name"                           value="opencms" />
     
     <property name="alkacon.input"                      location="${basedir}" />
@@ -51,6 +53,8 @@
             debug="on"
             optimize="on"
             deprecation="on"
+            source="${java.source.version}"
+            target="${java.target.version}"
             includeantruntime="false">
             <!-- compilerarg value="-Xlint:unchecked"/ -->
            </javac>
@@ -100,7 +104,9 @@
             excludes="**/data/**"
             debug="on"
             optimize="on"
-            deprecation="on" 
+            deprecation="on"
+            source="${java.source.version}"
+            target="${java.target.version}"
             includeantruntime="false">
 
                <classpath>
